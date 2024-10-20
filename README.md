@@ -31,3 +31,21 @@ celery -A sheetmusic.celery:app worker --loglevel=info
 ```
 
 You should see the worker picking up the task and executing it.
+
+## Sync products
+
+When we create a model method we can reuse that logic in a view or management command without duplicating code. For example, we can create a `sync` method on the `Product` model, and then reuse that logic in a management command to sync all products or a specific product.
+
+```
+python manage.py sync_product 1
+```
+
+We can also sync all products:
+
+```
+python manage.py sync_product --all
+```
+
+However, we can also expose this logic through a API endpoint. To do this, we can create a view that will trigger the sync process for a specific product as a background task using Celery. For example, if someone makes a GET request to `/zoey/sync/1/`, we can trigger the `sync_product` task to run in the background.
+
+Note that both the management command and the view are doing the same thing: they are syncing a product using `sheetmusic.apps.zoey.models.Product.sync()`. However, the view is triggered by an HTTP request, and the management command is triggered by a command line command.
