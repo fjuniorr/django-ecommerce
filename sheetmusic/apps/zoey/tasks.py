@@ -1,10 +1,7 @@
 from celery import shared_task
-import time
+from .models import Product
 
 @shared_task
-def add_numbers(x, y):
-    print(f"Adding {x} + {y}")
-    time.sleep(5)  # Simulate some work
-    result = x + y
-    print(f"Result: {result}")
-    return result
+def sync_product(product_id):
+    product = Product.objects.get(id=product_id)
+    product.sync()

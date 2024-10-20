@@ -25,6 +25,10 @@ click-plugins==1.1.1
 click-repl==0.3.0
     # via celery
 django==5.1.2
+    # via
+    #   -r requirements.in
+    #   django-model-utils
+django-model-utils==5.0.0
     # via -r requirements.in
 flower==2.0.1
     # via -r requirements.in

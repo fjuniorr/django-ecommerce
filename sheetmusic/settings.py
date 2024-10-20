@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sheetmusic.apps.zoey.apps.ZoeyConfig',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

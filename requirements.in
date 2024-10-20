@@ -3,3 +3,7 @@ psycopg2-binary
 celery[redis]
 flower
 PyYAML
+django-model-utils
+django-extensions
+ptpython
+httpx

@@ -1,4 +1,6 @@
 from django.db import models
+from model_utils.models import TimeStampedModel
+import httpx
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
@@ -7,3 +9,16 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def sync(self):
+        res = httpx.get("https://httpbin.org/uuid")
+        if res.status_code == 200:
+            zproduct = ZProduct.objects.create(id=res.json()["uuid"], product=self)
+            zproduct.save()
+
+class ZProduct(TimeStampedModel):
+    id = models.UUIDField(primary_key=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.product.title
