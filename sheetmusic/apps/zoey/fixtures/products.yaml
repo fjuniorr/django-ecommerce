@@ -1,0 +1,34 @@
+- model: zoey.product
+  pk: 1
+  fields:
+    title: Guitar Basics Sheet Music
+    description: A comprehensive guide for beginners learning guitar.
+    price: '19.99'
+
+- model: zoey.product
+  pk: 2
+  fields:
+    title: Piano Classics Collection
+    description: A compilation of famous classical pieces for piano.
+    price: '24.99'
+
+- model: zoey.product
+  pk: 3
+  fields:
+    title: Jazz Saxophone Solos
+    description: Sheet music for advanced saxophone players featuring jazz standards.
+    price: '29.99'
+
+- model: zoey.product
+  pk: 4
+  fields:
+    title: Beginner Drum Patterns
+    description: Essential drum patterns for novice drummers.
+    price: '14.99'
+
+- model: zoey.product
+  pk: 5
+  fields:
+    title: Violin Concertos Through the Ages
+    description: A collection of famous violin concertos from different eras.
+    price: '34.99'

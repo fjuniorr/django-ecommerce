@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class ZoeyConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'zoey'
+    name = 'sheetmusic.apps.zoey'

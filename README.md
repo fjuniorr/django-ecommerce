@@ -7,3 +7,9 @@ docker compose up
 psql -h localhost  -U postgres
 redis-cli -h localhost ping
 ```
+
+Load the fixtures:
+
+```
+python manage.py loaddata products
+```
