@@ -1,4 +1,5 @@
 from django.db import models
+from model_utils import FieldTracker
 from model_utils.models import TimeStampedModel
 import httpx
 
@@ -19,6 +20,8 @@ class Product(models.Model):
 class ZProduct(TimeStampedModel):
     id = models.UUIDField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    data = models.JSONField(null=True)
+    tracker = FieldTracker(fields=['data'])
 
     def __str__(self):
         return self.product.title
