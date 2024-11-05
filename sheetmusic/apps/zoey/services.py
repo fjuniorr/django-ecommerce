@@ -1,12 +1,14 @@
-# services.py
-
-from django.core.mail import mail_admins
-from django.conf import settings
 import random
+from .tasks import mail_admins, send_mail
 
 
-def send_hello_world_email():
-    subject = "Hello World"
-    message = f"Hello World! Your lucky number is {random.randint(1, 100)}."
+def notify_admin():
+    subject = "Hello Admin"
+    message = f"Hello! Your lucky number is {random.randint(1, 100)}."
+    mail_admins.delay(subject, message)
 
-    mail_admins(subject, message)
+
+def notify(recipient):
+    subject = "Hello Staff"
+    message = f"Hello! Your lucky number is {random.randint(1, 100)}."
+    send_mail.delay(subject, message, recipient)

@@ -7,3 +7,4 @@ django-model-utils
 django-extensions
 ptpython
 httpx
+django-celery-beat
