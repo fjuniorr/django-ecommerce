@@ -18,7 +18,7 @@ def mail_admins(subject: str, message: str, html_message=None, **kwargs):
     )
 
 
-@shared_task(name="core.tasks.mail_admins")
+@shared_task(name="core.tasks.mail")
 def send_mail(
     subject: str, message: str, recipient_list=None, html_message=None, **kwargs
 ):
@@ -30,3 +30,10 @@ def send_mail(
         html_message=html_message,
         **kwargs
     )
+
+
+@shared_task(name="notification.service")
+def notification():
+    from .services import notify_admin
+
+    notify_admin()

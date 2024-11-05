@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "sheetmusic.apps.zoey.apps.ZoeyConfig",
     "django_extensions",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [

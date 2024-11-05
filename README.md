@@ -49,3 +49,13 @@ python manage.py sync_product --all
 However, we can also expose this logic through a API endpoint. To do this, we can create a view that will trigger the sync process for a specific product as a background task using Celery. For example, if someone makes a GET request to `/zoey/sync/1/`, we can trigger the `sync_product` task to run in the background.
 
 Note that both the management command and the view are doing the same thing: they are syncing a product using `sheetmusic.apps.zoey.models.Product.sync()`. However, the view is triggered by an HTTP request, and the management command is triggered by a command line command.
+
+## Periodic tasks
+
+The periodic tasks still need ‘workers’ to execute them. So make sure the default Celery package is installed. Both the worker and beat services need to be running at the same time. As a separate process, start the beat service (specify the Django scheduler):
+
+```
+celery -A sheetmusic.celery:app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
+
+See the [docs](https://django-celery-beat.readthedocs.io/en/latest/#example-running-periodic-tasks) for other options such as running the worker and beat services with only one command for development.
