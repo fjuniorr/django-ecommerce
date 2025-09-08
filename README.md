@@ -59,3 +59,50 @@ celery -A sheetmusic.celery:app beat -l info --scheduler django_celery_beat.sche
 ```
 
 See the [docs](https://django-celery-beat.readthedocs.io/en/latest/#example-running-periodic-tasks) for other options such as running the worker and beat services with only one command for development.
+
+## Omnichannel Order Normalization
+
+Two new apps provide a minimal framework for normalizing orders from many storefronts.
+
+### Adapter Keys
+
+Adapters are looked up by semantic keys of the form:
+`<provider>.<api_version>.<kind>[.<channel>][.<program>][@<ingest>][#<schema_version>][:<format>][+<flags>...]`.
+The resolver progressively drops specificity (+flags → :format → #schema → @ingest → .program → .channel → provider.api_version.kind → provider.api_version.* → provider.* → *).
+
+### Ingestion Envelopes
+
+Transport and trigger metadata travel alongside payloads and stay out of the adapter key. Example envelopes:
+
+```json
+{"adapter_key":"shopify.v2025_04.standard","transport":"webhook","trigger":{"mode":"push"},"flags":[]}
+{"adapter_key":"shopify.v2025_04.subscription.recharge","transport":"webhook","trigger":{"mode":"push"},"flags":["split-bundles"]}
+{"adapter_key":"shopify.v2025_04.subscription.recharge","transport":"http_api","trigger":{"mode":"periodic","schedule":"*/15 * * * *","cursor":{"since":"2025-09-01T00:00:00Z"}}}
+{"adapter_key":"magento.v2.standard","transport":"http_api","trigger":{"mode":"periodic","schedule":"0 * * * *"}}
+{"adapter_key":"shopify.na.subscription.recharge@s3#v2025_09:csv+gzip+utf8-bom","transport":"s3","trigger":{"mode":"periodic"},"flags":["gzip","utf8-bom"]}
+{"adapter_key":"distributor_abc.na.standard@sftp#spec3:tsv","transport":"sftp","trigger":{"mode":"manual","actor":"user:francisco"},"flags":["headerless","pipe-delim"]}
+```
+
+### Quickstart
+
+Run a worker and beat:
+
+```
+celery -A sheetmusic.celery:app worker --loglevel=info
+celery -A sheetmusic.celery:app beat --loglevel=info
+```
+
+Post a webhook:
+
+```
+curl -X POST http://localhost:8000/ingest/webhook/ \
+  -H 'Content-Type: application/json' \
+  -d '{"adapter_key":"shopify.v2025_04.standard","transport":"webhook","trigger":{"mode":"push"},"payload":{"id":"1"},"flags":[]}'
+```
+
+### Job naming convention
+
+Celery beat entries follow `job::<provider>.<kind>[.<channel>][.<program>]@<transport>.<mode>[.<freq>]`.
+Examples:
+- `job::shopify.subscription.recharge@http_api.periodic.15m`
+- `job::distributor_abc.standard@sftp.manual`
