@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "sheetmusic.apps.zoey.apps.ZoeyConfig",
+    "sheetmusic.apps.ingest.apps.IngestConfig",
+    "sheetmusic.apps.integrations.apps.IntegrationsConfig",
     "django_extensions",
     "django_celery_beat",
 ]
@@ -142,3 +144,15 @@ EMAIL_USE_TLS = False
 
 
 ADMINS = [("Francisco", "francisco@ficksmusic.com")]
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    "poll_shopify_subscriptions_15m": {
+        "task": "sheetmusic.apps.ingest.tasks.poll_shopify_subscriptions_15m",
+        "schedule": crontab(minute="*/15"),
+    },
+    "demo_process_inbound_file_hourly": {
+        "task": "sheetmusic.apps.ingest.tasks.demo_process_inbound_file_hourly",
+        "schedule": crontab(minute=0, hour="*"),
+    },
+}
